@@ -2,11 +2,15 @@ Inserted: a in scope 1
 Inserted: b in scope 1
 Inserted: c in scope 1
 Inserted: d in scope 1
+Error: Type mismatch in declaration of e
 Inserted: e in scope 1
 Inserted: f in scope 1
-Error at line 7 column: 1: syntax error
+Inserted: h in scope 1
+Inserted: i in scope 1
+Inserted: j in scope 1
+Inserted: k in scope 1
 
-Total lines: 6
+Total lines: 8
 Total errors: 1
 
 ScopeTable # 1
@@ -16,4 +20,8 @@ ScopeTable # 1
  10 --> < d , IDENTIFIER >
  11 --> < e , IDENTIFIER >
  12 --> < f , IDENTIFIER >
+ 14 --> < h , IDENTIFIER >
+ 15 --> < i , IDENTIFIER >
+ 16 --> < j , IDENTIFIER >
+ 17 --> < k , IDENTIFIER >
 

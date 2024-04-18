@@ -194,12 +194,13 @@ declaration
 	: declaration_specifiers ';'
 	| declaration_specifiers init_declarator_list ';' {
 		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
-			if($2->at(i)->getVariableType() == "DECIMAL_CONSTANT" && $1->getSymbolType() != "INT"){
+			// logFile << "Debug: " << $1->getSymbolType() << " Debug: " << $2->at(i)->getSymbolName() << " Debug: " << $2->at(i)->getVariableType() << endl;
+			if( $1->getSymbolType() != "INT" && $2->at(i)->getVariableType() == "DECIMAL_CONSTANT" ){
 				logFile << "Error: Type mismatch in declaration of " << $2->at(i)->getSymbolName() << endl;
 				errFile << "Error: Type mismatch in declaration of " << $2->at(i)->getSymbolName() << endl;
 				error_count++;
 			}
-			if($2->at(i)->getVariableType() == "FLOAT_CONSTANT" && $1->getSymbolType() != "FLOAT"){
+			if($1->getSymbolType() != "FLOAT" && $2->at(i)->getVariableType() == "FLOAT_CONSTANT"){
 				logFile << "Error: Type mismatch in declaration of " << $2->at(i)->getSymbolName() << endl;
 				errFile << "Error: Type mismatch in declaration of " << $2->at(i)->getSymbolName() << endl;
 				error_count++;
@@ -231,7 +232,7 @@ declaration_specifiers
 
 init_declarator_list
 	: init_declarator	{ $$ = new vector<SymbolInfo*>(); $$->push_back($1); }
-	| init_declarator_list ',' init_declarator
+	| init_declarator_list ',' init_declarator	{ $1->push_back($3); $$ = $1; }
 	;
 
 init_declarator

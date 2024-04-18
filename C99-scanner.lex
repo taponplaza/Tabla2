@@ -107,21 +107,21 @@ extern int error_count;
     return(DECIMAL_CONSTANT); }
 L?'(\\.|[^\\'\n])+'	{ count(); return(CHAR_CONSTANT); }
 
-0{IS}?				{ 
+{D}+{E}{FS}?				{ 
     count();
-    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"DECIMAL_CONSTANT");
+    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"FLOAT_CONSTANT");
     yylval.sym = s;
-    return(DECIMAL_CONSTANT); }
-[1-9]{D}*{IS}?		{ 
+    return(FLOAT_CONSTANT); }
+{D}*"."{D}+{E}?{FS}?		{ 
     count();
-    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"DECIMAL_CONSTANT");
+    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"FLOAT_CONSTANT");
     yylval.sym = s;
-    return(DECIMAL_CONSTANT); }
-L?'(\\.|[^\\'\n])+'	{ count(); return(CHAR_CONSTANT); }
-
-{D}+{E}{FS}?				{ count(); return(FLOAT_CONSTANT); }
-{D}*"."{D}+{E}?{FS}?		{ count(); return(FLOAT_CONSTANT); }
-{D}+"."{D}*{E}?{FS}?		{ count(); return(FLOAT_CONSTANT); }
+    return(FLOAT_CONSTANT); }
+{D}+"."{D}*{E}?{FS}?		{ 
+    count();
+    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"FLOAT_CONSTANT");
+    yylval.sym = s;
+    return(FLOAT_CONSTANT); }
 0[xX]{H}+{P}{FS}?			{ count(); return(HEX_FLOAT_CONSTANT); }
 0[xX]{H}*"."{H}+{P}{FS}?     { count(); return(HEX_FLOAT_CONSTANT); }
 0[xX]{H}+"."{H}*{P}{FS}?     { count(); return(HEX_FLOAT_CONSTANT); }

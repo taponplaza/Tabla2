@@ -44,7 +44,8 @@ int main( int argc, const char* argv[] )
 
     yyparse();
 
-    logFile << "Total lines: " << line_count - 1 << endl;
+    logFile << endl;
+    logFile << "Total lines: " << line_count << endl;
     logFile << "Total errors: " << error_count << endl << endl;
 
     table.printAllScopeTables();
