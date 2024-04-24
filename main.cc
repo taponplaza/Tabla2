@@ -25,7 +25,7 @@ extern SymbolTable table;
 int main( int argc, const char* argv[] )
 {
     if(argc!=4) {
-        std::cout << "./fparse input.c log.txt error.txt" << std::endl;
+        std::cout << "command: ./fparse input.c log.txt error.txt" << std::endl;
         return 0;
     }
 

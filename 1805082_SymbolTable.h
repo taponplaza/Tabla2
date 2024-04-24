@@ -9,27 +9,19 @@ class SymbolInfo {
 private:
     string symbolName;
     string symbolType;
-    SymbolInfo *nextSymbol;    //for chaining
-    int hashIdx, hashPos;
+    SymbolInfo *nextSymbol = nullptr;    //for chaining
+    int hashIdx = 0, hashPos = 0;
 
-    string returnType; 
-    string varType;
-    vector <SymbolInfo*>* paramList;
-    bool isFunc;
-    bool isDef;
-    bool isArr;
+    string returnType = ""; 
+    string varType = "";
+    vector <SymbolInfo*>* paramList = nullptr;
+    bool isFunc = false;
+    bool isDef = false;
+    bool isArr = false;
     
 public:
-    SymbolInfo(string name, string type) {
-        this->symbolName = name;
-        this->symbolType = type;
-        nextSymbol = NULL;
-        returnType = "";
-        varType = "";
-        isFunc = false;
-        isDef = false;
-        isArr = false;
-    }
+    SymbolInfo(string name, string type) 
+        : symbolName(name), symbolType(type) {}
 
     SymbolInfo() {
         nextSymbol = NULL;

@@ -1,27 +1,13 @@
-Inserted: a in scope 1
-Inserted: b in scope 1
-Inserted: c in scope 1
-Inserted: d in scope 1
-Error: Type mismatch in declaration of e
-Inserted: e in scope 1
-Inserted: f in scope 1
-Inserted: h in scope 1
-Inserted: i in scope 1
-Inserted: j in scope 1
-Inserted: k in scope 1
+Inserted: main in scope 1
+Inserted: argc in scope 1.1
+Inserted: argv in scope 1.1
+Inserted: a in scope 1.1
+Inserted: function in scope 1
 
-Total lines: 8
-Total errors: 1
+Total lines: 5
+Total errors: 0
 
 ScopeTable # 1
- 7 --> < a , IDENTIFIER >
- 8 --> < b , IDENTIFIER >
- 9 --> < c , IDENTIFIER >
- 10 --> < d , IDENTIFIER >
- 11 --> < e , IDENTIFIER >
- 12 --> < f , IDENTIFIER >
- 14 --> < h , IDENTIFIER >
- 15 --> < i , IDENTIFIER >
- 16 --> < j , IDENTIFIER >
- 17 --> < k , IDENTIFIER >
+ 7 --> < main , IDENTIFIER >
+ 22 --> < function , IDENTIFIER >
 

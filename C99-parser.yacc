@@ -40,7 +40,8 @@ SymbolTable table(30);
 %type<sym> relational_expression equality_expression and_expression exclusive_or_expression
 %type<sym> inclusive_or_expression logical_and_expression logical_or_expression
 %type<sym> conditional_expression assignment_expression expression constant_expression
-%type<symList> init_declarator_list
+%type<sym> parameter_declaration
+%type<symList> init_declarator_list parameter_type_list parameter_list
 
 
 %start translation_unit
@@ -348,9 +349,12 @@ direct_declarator
 	| direct_declarator '[' type_qualifier_list '*' ']'
 	| direct_declarator '[' '*' ']'
 	| direct_declarator '[' ']'
-	| direct_declarator '(' parameter_type_list ')'
+	| direct_declarator '(' parameter_type_list ')' {
+		$1->setParamList($3);
+		$$ = $1;
+	}
 	| direct_declarator '(' identifier_list ')'
-	| direct_declarator '(' ')'
+	| direct_declarator '(' ')' { $$ = $1; }
 	;
 
 pointer
@@ -367,17 +371,20 @@ type_qualifier_list
 
 
 parameter_type_list
-	: parameter_list
+	: parameter_list { $$ = $1; }
 	| parameter_list ',' ELLIPSIS
 	;
 
 parameter_list
-	: parameter_declaration
-	| parameter_list ',' parameter_declaration
+	: parameter_declaration { $$ = new vector<SymbolInfo*>(); $$->push_back($1); }
+	| parameter_list ',' parameter_declaration { $1->push_back($3); $$ = $1; }
 	;
 
 parameter_declaration
-	: declaration_specifiers declarator
+	: declaration_specifiers declarator{
+		$2->setVariableType($1->getSymbolType());
+		$$ = $2;
+	}
 	| declaration_specifiers abstract_declarator
 	| declaration_specifiers
 	;
@@ -509,7 +516,32 @@ external_declaration
 
 function_definition
 	: declaration_specifiers declarator declaration_list compound_statement
-	| declaration_specifiers declarator compound_statement
+	| declaration_specifiers declarator {
+		$1->setIsFunction(true);
+		$2->setVariableType($1->getSymbolType());
+		if (table.insert($2)) {
+			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}
+		else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+		table.enterScope();
+		if ($2->getParamList() != nullptr) {
+			for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->getParamList()->size(); i++){
+				SymbolInfo* symbol = $2->getParamList()->at(i);
+				if (table.insert(symbol)) {
+					logFile << "Inserted: " << symbol->getSymbolName() << " in scope " << table.printScopeId() << endl;
+				}
+				else {
+					logFile << "Error: " << symbol->getSymbolName() << " already exists in scope " << endl;
+					errFile << "Error: " << symbol->getSymbolName() << " already exists in scope " << endl;
+					error_count++;
+				}
+			}
+		}
+	} compound_statement { table.exitScope(); }
 	;
 
 declaration_list
