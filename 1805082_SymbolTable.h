@@ -127,13 +127,8 @@ public:
     }
 
     ~SymbolInfo() {
-    //    // cout << "destructing " << symbolName << endl;
-        // delete nextSymbol;
-        for (std::vector<SymbolInfo*>::size_type i = 0; i < paramList->size(); i++) {
-            delete paramList->at(i);
-        }
-        delete paramList;
-    }
+    paramList = nullptr;
+}
 
 };
 
@@ -297,7 +292,7 @@ public:
 
             while (currSymbol != NULL) {
                 // cout << "< " << currSymbol->getSymbolName() << " : " << currSymbol->getSymbolType() << " > ";
-                logFile << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " >";
+                logFile << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() << " >";
                 currSymbol = currSymbol->getNextSymbol();
             }
             if(printEnter){
@@ -349,11 +344,27 @@ public:
     // }
 
     ~ScopeTable() {
-        // for (int i = 0; i < total_buckets; i++) {
-        //     delete chainHashTable[i];
-        // }
-        // delete[] chainHashTable;
+    // logFile << "Destructing ScopeTable with ID: " << scopeID << std::endl;
+    for (int i = 0; i < total_buckets; i++) {
+        // logFile << "Starting chain " << i << std::endl;
+        SymbolInfo *current = chainHashTable[i];
+        while (current != nullptr) {
+            SymbolInfo *next = current->getNextSymbol();
+            // logFile << "Deleting Symbol: " << current->getSymbolName() << " at chain " << i << std::endl;
+            // logFile << "Current Pointer: " << current << ", Next Pointer: " << next << std::endl;
+            delete current;
+            current = next;
+            if (current == nullptr) {
+                // logFile << "End of chain " << i << std::endl;
+            }
+        }
+        chainHashTable[i] = nullptr;  // Explicitly nulling the pointer after clearing the chain
     }
+    delete[] chainHashTable; // Deletes the array of pointers
+    chainHashTable = nullptr; // Prevents dangling pointer
+    logFile << "ScopeTable " << scopeID << " fully destructed." << std::endl;
+}
+
 };
 
 
@@ -513,13 +524,21 @@ public:
     }
 
     ~SymbolTable() {
-        if(currScopeTable->getParentScope() != NULL){
-            delete currScopeTable->getParentScope();   
+    // logFile << "Destructing SymbolTable..." << std::endl;
+    while (currScopeTable != nullptr) {
+        ScopeTable* tempScopeTable = currScopeTable;
+        currScopeTable = currScopeTable->getParentScope();  // Move up the chain of scope tables
+        // logFile << "Destructing ScopeTable with ID: " << tempScopeTable->getScopeId() << std::endl;
+        delete tempScopeTable;  // Delete the current scope table
+        tempScopeTable = nullptr;  // Ensure pointer is null after deletion
+        if (currScopeTable != nullptr) {
+            // logFile << "Moving to parent ScopeTable with ID: " << currScopeTable->getScopeId() << std::endl;
+        } else {
+            // logFile << "No more ScopeTables to destruct." << std::endl;
         }
-        delete currScopeTable;
-        
-    //    // cout << "Destroying the current SymbolTable" << endl;
     }
+    logFile << "SymbolTable fully destructed." << std::endl;
+}
 };
 
 

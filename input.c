@@ -1,5 +1,8 @@
 int main(int argc, int argv){
-    int a;
+    int b;
 }
-
-int function();
+int main2(int argd, int arge){
+    int f;
+}
+int a;
+int b;

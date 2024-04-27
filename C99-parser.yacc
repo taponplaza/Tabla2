@@ -30,17 +30,11 @@ SymbolTable table(30);
 
 %token<sym> CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
-%token<sym> HEX_CONSTANT OCTAL_CONSTANT DECIMAL_CONSTANT CHAR_CONSTANT
-%token<sym> FLOAT_CONSTANT HEX_FLOAT_CONSTANT
+%token<sym> CONSTANT
 
 %type<sym> type_specifier struct_or_union_specifier enum_specifier struct_or_union
 %type<sym> storage_class_specifier direct_declarator declarator declaration_specifiers
-%type<sym> init_declarator initializer	primary_expression postfix_expression unary_expression
-%type<sym> cast_expression multiplicative_expression additive_expression shift_expression
-%type<sym> relational_expression equality_expression and_expression exclusive_or_expression
-%type<sym> inclusive_or_expression logical_and_expression logical_or_expression
-%type<sym> conditional_expression assignment_expression expression constant_expression
-%type<sym> parameter_declaration
+%type<sym> init_declarator initializer parameter_declaration
 %type<symList> init_declarator_list parameter_type_list parameter_list
 
 
@@ -49,18 +43,13 @@ SymbolTable table(30);
 
 primary_expression
     : IDENTIFIER
-    | DECIMAL_CONSTANT	{ $$ = $1;}
-    | OCTAL_CONSTANT
-    | HEX_CONSTANT
-    | CHAR_CONSTANT
-    | FLOAT_CONSTANT	{ $$ = $1;}
-    | HEX_FLOAT_CONSTANT
+    | CONSTANT
     | STRING_LITERAL
     | '(' expression ')'
     ;
 
 postfix_expression
-	: primary_expression	{ $$ = $1; }
+	: primary_expression
 	| postfix_expression '[' expression ']'
 	| postfix_expression '(' ')'
 	| postfix_expression '(' argument_expression_list ')'
@@ -78,7 +67,7 @@ argument_expression_list
 	;
 
 unary_expression
-	: postfix_expression	{ $$ = $1; }
+	: postfix_expression
 	| INC_OP unary_expression
 	| DEC_OP unary_expression
 	| unary_operator cast_expression
@@ -96,31 +85,31 @@ unary_operator
 	;
 
 cast_expression
-	: unary_expression	{ $$ = $1; }
+	: unary_expression
 	| '(' type_name ')' cast_expression
 	;
 
 multiplicative_expression
-	: cast_expression	{ $$ = $1; }
+	: cast_expression
 	| multiplicative_expression '*' cast_expression
 	| multiplicative_expression '/' cast_expression
 	| multiplicative_expression '%' cast_expression
 	;
 
 additive_expression
-	: multiplicative_expression	{ $$ = $1; }
+	: multiplicative_expression
 	| additive_expression '+' multiplicative_expression
 	| additive_expression '-' multiplicative_expression
 	;
 
 shift_expression
-	: additive_expression	{ $$ = $1; }
+	: additive_expression
 	| shift_expression LEFT_OP additive_expression
 	| shift_expression RIGHT_OP additive_expression
 	;
 
 relational_expression
-	: shift_expression	{ $$ = $1; }
+	: shift_expression
 	| relational_expression '<' shift_expression
 	| relational_expression '>' shift_expression
 	| relational_expression LE_OP shift_expression
@@ -128,43 +117,43 @@ relational_expression
 	;
 
 equality_expression
-	: relational_expression	{ $$ = $1; }
+	: relational_expression
 	| equality_expression EQ_OP relational_expression
 	| equality_expression NE_OP relational_expression
 	;
 
 and_expression
-	: equality_expression	{ $$ = $1; }
+	: equality_expression
 	| and_expression '&' equality_expression
 	;
 
 exclusive_or_expression
-	: and_expression	{ $$ = $1; }
+	: and_expression
 	| exclusive_or_expression '^' and_expression
 	;
 
 inclusive_or_expression
-	: exclusive_or_expression	{ $$ = $1; }
+	: exclusive_or_expression
 	| inclusive_or_expression '|' exclusive_or_expression
 	;
 
 logical_and_expression
-	: inclusive_or_expression	{ $$ = $1; }
+	: inclusive_or_expression
 	| logical_and_expression AND_OP inclusive_or_expression
 	;
 
 logical_or_expression
-	: logical_and_expression	{ $$ = $1; }
+	: logical_and_expression
 	| logical_or_expression OR_OP logical_and_expression
 	;
 
 conditional_expression
-	: logical_or_expression	{ $$ = $1; }
+	: logical_or_expression
 	| logical_or_expression '?' expression ':' conditional_expression
 	;
 
 assignment_expression
-	: conditional_expression	{ $$ = $1; }
+	: conditional_expression
 	| unary_expression assignment_operator assignment_expression
 	;
 
@@ -196,16 +185,6 @@ declaration
 	| declaration_specifiers init_declarator_list ';' {
 		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
 			// logFile << "Debug: " << $1->getSymbolType() << " Debug: " << $2->at(i)->getSymbolName() << " Debug: " << $2->at(i)->getVariableType() << endl;
-			if( $1->getSymbolType() != "INT" && $2->at(i)->getVariableType() == "DECIMAL_CONSTANT" ){
-				logFile << "Error: Type mismatch in declaration of " << $2->at(i)->getSymbolName() << endl;
-				errFile << "Error: Type mismatch in declaration of " << $2->at(i)->getSymbolName() << endl;
-				error_count++;
-			}
-			if($1->getSymbolType() != "FLOAT" && $2->at(i)->getVariableType() == "FLOAT_CONSTANT"){
-				logFile << "Error: Type mismatch in declaration of " << $2->at(i)->getSymbolName() << endl;
-				errFile << "Error: Type mismatch in declaration of " << $2->at(i)->getSymbolName() << endl;
-				error_count++;
-			}
 			$2->at(i)->setVariableType($1->getSymbolType());
 			if (table.insert($2->at(i))) {
 				logFile << "Inserted: " << $2->at(i)->getSymbolName() << " in scope " << table.printScopeId() << endl;
@@ -238,7 +217,7 @@ init_declarator_list
 
 init_declarator
 	: declarator	{ $$ = $1; }
-	| declarator '=' initializer	{ $1->setVariableType($3->getSymbolType()); $$ = $1;}
+	| declarator '=' initializer	{ $1->setIsDefined(true); $$ = $1;}
 	;
 
 storage_class_specifier
@@ -420,7 +399,7 @@ direct_abstract_declarator
 	;
 
 initializer
-	: assignment_expression	{ $$ = $1; }
+	: assignment_expression
 	| '{' initializer_list '}'
 	| '{' initializer_list ',' '}'
 	;
@@ -541,7 +520,10 @@ function_definition
 				}
 			}
 		}
-	} compound_statement { table.exitScope(); }
+	} compound_statement {
+		$1->setIsDefined(true);
+		table.exitScope(); 
+	}
 	;
 
 declaration_list

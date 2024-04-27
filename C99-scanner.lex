@@ -93,38 +93,17 @@ extern int error_count;
 	return IDENTIFIER;
 }
 
-0[xX][0-9a-fA-F]+([uU][lL]{0,2}|[lL]{1,2}[uU]?)?	{ count(); return(HEX_CONSTANT); }
-0[1-7]+{IS}?		{ count(); return(OCTAL_CONSTANT); }
-0{IS}?				{ 
-    count();
-    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"DECIMAL_CONSTANT");
-    yylval.sym = s;
-    return(DECIMAL_CONSTANT); }
-[1-9]{D}*{IS}?		{ 
-    count();
-    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"DECIMAL_CONSTANT");
-    yylval.sym = s;
-    return(DECIMAL_CONSTANT); }
-L?'(\\.|[^\\'\n])+'	{ count(); return(CHAR_CONSTANT); }
+0[xX]{H}+{IS}?		{ count(); return(CONSTANT); }
+0[0-7]*{IS}?		{ count(); return(CONSTANT); }
+[1-9]{D}*{IS}?		{ count(); return(CONSTANT); }
+L?'(\\.|[^\\'\n])+'	{ count(); return(CONSTANT); }
 
-{D}+{E}{FS}?				{ 
-    count();
-    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"FLOAT_CONSTANT");
-    yylval.sym = s;
-    return(FLOAT_CONSTANT); }
-{D}*"."{D}+{E}?{FS}?		{ 
-    count();
-    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"FLOAT_CONSTANT");
-    yylval.sym = s;
-    return(FLOAT_CONSTANT); }
-{D}+"."{D}*{E}?{FS}?		{ 
-    count();
-    SymbolInfo *s= new  SymbolInfo(yytext, (char *)"FLOAT_CONSTANT");
-    yylval.sym = s;
-    return(FLOAT_CONSTANT); }
-0[xX]{H}+{P}{FS}?			{ count(); return(HEX_FLOAT_CONSTANT); }
-0[xX]{H}*"."{H}+{P}{FS}?     { count(); return(HEX_FLOAT_CONSTANT); }
-0[xX]{H}+"."{H}*{P}{FS}?     { count(); return(HEX_FLOAT_CONSTANT); }
+{D}+{E}{FS}?		{ count(); return(CONSTANT); }
+{D}*"."{D}+{E}?{FS}?	{ count(); return(CONSTANT); }
+{D}+"."{D}*{E}?{FS}?	{ count(); return(CONSTANT); }
+0[xX]{H}+{P}{FS}?	{ count(); return(CONSTANT); }
+0[xX]{H}*"."{H}+{P}{FS}?     { count(); return(CONSTANT); }
+0[xX]{H}+"."{H}*{P}{FS}?     { count(); return(CONSTANT); }
 
 
 L?\"(\\.|[^\\"\n])*\"	{ count(); return(STRING_LITERAL); }
