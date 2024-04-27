@@ -16,7 +16,7 @@ extern int MVL_LINNUM;
 extern void yyerror(const char *s);
 extern int yyparse ();
 
-std::ofstream logFile, errFile;
+std::ofstream logFile, errFile, sym_tables;
 
 extern int error_count, line_count;
 
@@ -35,8 +35,8 @@ int main( int argc, const char* argv[] )
     }
 
     logFile.open(argv[2]);
-
     errFile.open(argv[3]);
+    sym_tables.open("sym_tables.txt");
 
     yyin=inputFile;
 
@@ -52,6 +52,7 @@ int main( int argc, const char* argv[] )
     
 
     logFile.close();
+    sym_tables.close();
     errFile.close();
     fclose(yyin);
     

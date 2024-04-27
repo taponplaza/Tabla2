@@ -3,7 +3,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-extern ofstream logFile;
+extern ofstream logFile, sym_tables;
 
 class SymbolInfo {
 private:
@@ -280,29 +280,29 @@ public:
             if(enteredScope == false){
                 // cout << "ScopeTable# " << scopeID << endl;
              
-                logFile << "ScopeTable # " << scopeID << endl;
+                sym_tables << "ScopeTable # " << scopeID << endl;
                 enteredScope = true;
 
             }
             if(currSymbol != NULL){
                 // cout << i << " --> ";
-                logFile << " " << i << " --> ";
+                sym_tables << " " << i << " --> ";
                 printEnter = true;
             }
 
             while (currSymbol != NULL) {
                 // cout << "< " << currSymbol->getSymbolName() << " : " << currSymbol->getSymbolType() << " > ";
-                logFile << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() << " >";
+                sym_tables << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() << " >";
                 currSymbol = currSymbol->getNextSymbol();
             }
             if(printEnter){
                 // cout << endl;
-                logFile << endl;
+                sym_tables << endl;
                 printEnter = false;
             }
         }
         // cout << endl;
-        logFile << endl;
+        sym_tables << endl;
     }
 
     SymbolInfo *lookup(string key) {
@@ -391,6 +391,7 @@ public:
 
     void exitScope() {
 //        Remove the current ScopeTable
+        printCurrScopeTable();
         if(!isSymbolTableEmpty()){
 
             if (currScopeTable->getParentScope() == NULL) {
