@@ -1,0 +1,7 @@
+fparse
+*.cc
+*.o
+*.gv
+*.output
+*.hh
+.vscode/*
