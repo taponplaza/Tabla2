@@ -48,9 +48,6 @@ int main( int argc, const char* argv[] )
     logFile << "Total lines: " << line_count << endl;
     logFile << "Total errors: " << error_count << endl << endl;
 
-    table.printAllScopeTables();
-    
-
     logFile.close();
     sym_tables.close();
     errFile.close();
