@@ -40,9 +40,11 @@ int main( int argc, const char* argv[] )
 
     yyin=inputFile;
 
-    yydebug = 1;  // Enable Bison's debug mode
+    //yydebug = 1;  // Enable Bison's debug mode
 
     yyparse();
+    
+    table.exitScope();
 
     logFile << endl;
     logFile << "Total lines: " << line_count << endl;

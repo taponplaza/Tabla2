@@ -32,16 +32,16 @@ SymbolTable table(30);
 
 %token<sym> CONSTANT
 
-%type<sym> type_specifier struct_or_union_specifier enum_specifier struct_or_union
-%type<sym> storage_class_specifier direct_declarator declarator declaration_specifiers
-%type<sym> init_declarator initializer parameter_declaration
+%type<sym> type_specifier struct_or_union_specifier enum_specifier struct_or_union specifier_qualifier_list specifier_qualifier_list specifier_qualifier_list specifier_qualifier_list
+%type<sym> storage_class_specifier direct_declarator declarator declaration_specifiers type_qualifier type_qualifier type_qualifier type_qualifier
+%type<sym> init_declarator initializer parameter_declaration  struct_declarator  struct_declarator  struct_declarator  struct_declarator
 
 %type<sym> primary_expression postfix_expression unary_expression cast_expression
 %type<sym> multiplicative_expression additive_expression shift_expression
 %type<sym> relational_expression equality_expression and_expression
 %type<sym> exclusive_or_expression inclusive_or_expression logical_and_expression
 %type<sym> logical_or_expression conditional_expression assignment_expression
-%type<symList> init_declarator_list parameter_type_list parameter_list
+%type<symList> init_declarator_list parameter_type_list parameter_list struct_declaration_list struct_declarator_list struct_declaration struct_declaration_list struct_declarator_list struct_declaration struct_declaration_list struct_declarator_list struct_declaration struct_declaration_list struct_declarator_list struct_declaration
 
 
 %start translation_unit
@@ -252,9 +252,113 @@ type_specifier
     ;
 
 struct_or_union_specifier
-	: struct_or_union IDENTIFIER '{' struct_declaration_list '}'
+	: struct_or_union IDENTIFIER '{' struct_declaration_list '}'    
+	{ 
+		$2->setIsStruct(true);
+		$2->setVariableType($1->getSymbolType());
+		if (table.insert($2)) {
+			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+		$2->setParamList($4);
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $4->size(); i++){
+			logFile << "Struct item 2: " << $4->at(i)->getSymbolName() << endl;
+		} 
+	
+	}
+	{ 
+		$2->setIsStruct(true);
+		$2->setVariableType($1->getSymbolType());
+		if (table.insert($2)) {
+			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+		$2->setParamList($4);
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $4->size(); i++){
+			logFile << "Struct item 2: " << $4->at(i)->getSymbolName() << endl;
+		} 
+	
+	}
+	{ 
+		$2->setIsStruct(true);
+		$2->setVariableType($1->getSymbolType());
+		if (table.insert($2)) {
+			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+		$2->setParamList($4);
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $4->size(); i++){
+			logFile << "Struct item 2: " << $4->at(i)->getSymbolName() << endl;
+		} 
+	
+	}
+	{ 
+		$2->setIsStruct(true);
+		$2->setVariableType($1->getSymbolType());
+		if (table.insert($2)) {
+			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+		$2->setParamList($4);
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $4->size(); i++){
+			logFile << "Struct item 2: " << $4->at(i)->getSymbolName() << endl;
+		} 
+	
+	}
 	| struct_or_union '{' struct_declaration_list '}'
 	| struct_or_union IDENTIFIER
+	{ 
+		$1->setIsStruct(true);
+		if (table.insert($2)) {
+			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+	}
+	{ 
+		$1->setIsStruct(true);
+		if (table.insert($2)) {
+			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+	}
+	{ 
+		$1->setIsStruct(true);
+		if (table.insert($2)) {
+			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+	}
+	{ 
+		$1->setIsStruct(true);
+		if (table.insert($2)) {
+			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+	}
 	;
 
 struct_or_union
@@ -263,28 +367,83 @@ struct_or_union
 	;
 
 struct_declaration_list
-	: struct_declaration
-	| struct_declaration_list struct_declaration
+	: struct_declaration { $$ = $1; 
+	for(std::vector<SymbolInfo*>::size_type i = 0; i < $1->size(); i++){
+			logFile << "Struct item: " << $1->at(i)->getSymbolName() << endl;
+		} 
+	}
+	
+	| struct_declaration_list struct_declaration 
+	{ 
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
+			$1->push_back($2->at(i));
+			logFile << "Struct item: " << $2->at(i)->getSymbolName() << endl;
+		} 
+		$$ = $1; 
+	}
+	: struct_declaration { $$ = $1; 
+	for(std::vector<SymbolInfo*>::size_type i = 0; i < $1->size(); i++){
+			logFile << "Struct item: " << $1->at(i)->getSymbolName() << endl;
+		} 
+	}
+	
+	| struct_declaration_list struct_declaration 
+	{ 
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
+			$1->push_back($2->at(i));
+			logFile << "Struct item: " << $2->at(i)->getSymbolName() << endl;
+		} 
+		$$ = $1; 
+	}
 	;
 
 struct_declaration
 	: specifier_qualifier_list struct_declarator_list ';'
+	{
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
+			$2->at(i)->setVariableType($1->getSymbolType());
+		}
+		$$ = $2;
+	}
+	{
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
+			$2->at(i)->setVariableType($1->getSymbolType());
+		}
+		$$ = $2;
+	}
+	{
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
+			$2->at(i)->setVariableType($1->getSymbolType());
+		}
+		$$ = $2;
+	}
+	{
+		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
+			$2->at(i)->setVariableType($1->getSymbolType());
+		}
+		$$ = $2;
+	}
 	;
 
 specifier_qualifier_list
-	: type_specifier specifier_qualifier_list
-	| type_specifier
+	: type_specifier  
+	| type_specifier  
+	| type_qualifier    
+	| type_specifier specifier_qualifier_list
+	| type_qualifier  
+	: type_specifier  
+	| type_specifier qualifier  _qualifier_list
+	| type_qualifier  
 	| type_qualifier specifier_qualifier_list
-	| type_qualifier
 	;
 
 struct_declarator_list
-	: struct_declarator
-	| struct_declarator_list ',' struct_declarator
+	: struct_declarator { $$ = new vector<SymbolInfo*>(); $$->push_back($1); }
+	| struct_declarator_list ',' struct_declarator { $1->push_back($3); $$ = $1; }
 	;
 
 struct_declarator
-	: declarator
+	: declarator { $$ = $1; }
 	| ':' constant_expression
 	| declarator ':' constant_expression
 	;

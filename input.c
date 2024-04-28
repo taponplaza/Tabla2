@@ -1,6 +1,17 @@
-int myNumbers[4][3] = {
-    {1, 2, 3},
-    {4, 5, 6},
-    {7, 8, 9},
-    {10, 11, 12}
+int main(int argc, int argv){
+    
+}
+union car
+{
+  int x;
+  int price;
 };
+int y;
+/* 
+union unionJob
+{
+   //defining a union
+   char name[32];
+   float salary;
+   int workerNo;
+} uJob;*/

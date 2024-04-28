@@ -1,5 +1,15 @@
-Inserted: myNumbers in scope 1
+Inserted: main in scope 1
+Inserted: argc in scope 1.1
+Inserted: argv in scope 1.1
+ScopeTable 1.1 fully destructed.
+Struct item: x
+Struct item: price
+Inserted: car in scope 1
+Struct item 2: x
+Struct item 2: price
+Inserted: y in scope 1
+ScopeTable 1 fully destructed.
 
-Total lines: 6
+Total lines: 10
 Total errors: 0
 

@@ -20,6 +20,10 @@ private:
     bool isArr = false;
     bool isPoint = false;
     vector<int> arrSize;
+    bool isStrct = false;
+    bool isStrct = false;
+    bool isStrct = false;
+    bool isStrct = false;
     
 public:
     SymbolInfo(string name, string type) 
@@ -49,6 +53,10 @@ public:
         isDef = s1.isDef;
         isArr = s1.isArr;
         isPoint = s1.isPoint;
+        isStrct = s1.isStrct;
+        isStrct = s1.isStrct;
+        isStrct = s1.isStrct;
+        isStrct = s1.isStrct;
     }
 
     void setReturnType (string type){
@@ -75,12 +83,88 @@ public:
         return paramList;
     }
 
+    string getParamListString(){
+        string paramListStr = "";
+        for(std::vector<SymbolInfo*>::size_type i = 0; i < paramList->size(); i++){
+            paramListStr +=  "< " + paramList->at(i)->getSymbolName() + " , " + paramList->at(i)->getSymbolType() + " , " + paramList->at(i)->getVariableType() + " >";
+            if(i < paramList->size() - 1){
+                paramListStr += ", ";
+            }
+        }
+        return paramListStr;
+    }
+
+    string getParamListString(){
+        string paramListStr = "";
+        for(std::vector<SymbolInfo*>::size_type i = 0; i < paramList->size(); i++){
+            paramListStr +=  "< " + paramList->at(i)->getSymbolName() + " , " + paramList->at(i)->getSymbolType() + " , " + paramList->at(i)->getVariableType() + " >";
+            if(i < paramList->size() - 1){
+                paramListStr += ", ";
+            }
+        }
+        return paramListStr;
+    }
+
+    string getParamListString(){
+        string paramListStr = "";
+        for(std::vector<SymbolInfo*>::size_type i = 0; i < paramList->size(); i++){
+            paramListStr +=  "< " + paramList->at(i)->getSymbolName() + " , " + paramList->at(i)->getSymbolType() + " , " + paramList->at(i)->getVariableType() + " >";
+            if(i < paramList->size() - 1){
+                paramListStr += ", ";
+            }
+        }
+        return paramListStr;
+    }
+
+    string getParamListString(){
+        string paramListStr = "";
+        for(std::vector<SymbolInfo*>::size_type i = 0; i < paramList->size(); i++){
+            paramListStr +=  "< " + paramList->at(i)->getSymbolName() + " , " + paramList->at(i)->getSymbolType() + " , " + paramList->at(i)->getVariableType() + " >";
+            if(i < paramList->size() - 1){
+                paramListStr += ", ";
+            }
+        }
+        return paramListStr;
+    }
+
     void setIsFunction(bool set){
         isFunc = set;
     }
 
+    void setIsStruct(bool set){
+        isStrct = set;
+    }
+
+    void setIsStruct(bool set){
+        isStrct = set;
+    }
+
+    void setIsStruct(bool set){
+        isStrct = set;
+    }
+
+    void setIsStruct(bool set){
+        isStrct = set;
+    }
+
     bool isFunction(){
         return isFunc;
+    }
+
+    bool isStruct(){
+        return isStrct;
+    }
+
+    bool isStruct(){
+        return isStrct;
+    }
+
+    bool isStruct(){
+        return isStrct;
+    }
+
+    bool isStruct(){
+        return isStrct;
     }
 
     void setIsArray(bool set){
@@ -312,7 +396,28 @@ public:
 
             while (currSymbol != NULL) {
                 // cout << "< " << currSymbol->getSymbolName() << " : " << currSymbol->getSymbolType() << " > ";
-                sym_tables << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() << " >";
+                if(currSymbol->isStruct()){
+                    sym_tables << "<qweq " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() <<  " , " << currSymbol->getParamListString() << " >";
+                }
+                else{
+                    sym_tables << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() << " >";
+                }
+                if(currSymbol->isStruct()){
+                    sym_tables << "<qweq " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() <<  " , " << currSymbol->getParamListString() << " >";
+                }
+                else{
+                    if(currSymbol->isStruct()){
+                    sym_tables << "<qweq " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() <<  " , " << currSymbol->getParamListString() << " >";
+                }
+                else{
+                    if(currSymbol->isStruct()){
+                    sym_tables << "<qweq " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() <<  " , " << currSymbol->getParamListString() << " >";
+                }
+                else{
+                    sym_tables << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() << " >";
+                }
+                }
+                }
                 currSymbol = currSymbol->getNextSymbol();
             }
             if(printEnter){
