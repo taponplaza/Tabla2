@@ -1,0 +1,3 @@
+ScopeTable # 1
+ 12 --> < myNumbers , IDENTIFIER , INT >
+

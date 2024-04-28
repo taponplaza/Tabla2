@@ -18,6 +18,8 @@ private:
     bool isFunc = false;
     bool isDef = false;
     bool isArr = false;
+    bool isPoint = false;
+    vector<int> arrSize;
     
 public:
     SymbolInfo(string name, string type) 
@@ -37,12 +39,16 @@ public:
         returnType = s1.returnType;  
         varType = s1.varType;
 
+        arrSize = std::vector<int>();
+        arrSize = s1.arrSize;
+
         paramList = new vector<SymbolInfo*>;
         paramList = s1.paramList;
 
         isFunc = s1.isFunc;
         isDef = s1.isDef;
         isArr = s1.isArr;
+        isPoint = s1.isPoint;
     }
 
     void setReturnType (string type){
@@ -78,11 +84,24 @@ public:
     }
 
     void setIsArray(bool set){
+        arrSize = std::vector<int>();
         isArr = set;
     }
 
     bool isArray(){
         return isArr;
+    }
+
+    void setIsPointer(bool set){
+        isPoint = set;
+    }
+
+    bool isPointer(){
+        return isPoint;
+    }
+
+    void addArrSize(int size){
+        arrSize.push_back(size);
     }
 
      void setIsDefined(bool set){
@@ -128,6 +147,7 @@ public:
 
     ~SymbolInfo() {
     paramList = nullptr;
+    arrSize.clear();
 }
 
 };

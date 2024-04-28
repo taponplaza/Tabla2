@@ -95,7 +95,12 @@ extern int error_count;
 
 0[xX]{H}+{IS}?		{ count(); return(CONSTANT); }
 0[0-7]*{IS}?		{ count(); return(CONSTANT); }
-[1-9]{D}*{IS}?		{ count(); return(CONSTANT); }
+[1-9]{D}*{IS}?		{ 
+	count();
+	SymbolInfo *s = new SymbolInfo(yytext, (char *)"CONSTANT");
+	yylval.sym = s;
+	return(CONSTANT); 
+}
 L?'(\\.|[^\\'\n])+'	{ count(); return(CONSTANT); }
 
 {D}+{E}{FS}?		{ count(); return(CONSTANT); }

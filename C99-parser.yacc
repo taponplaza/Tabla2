@@ -35,6 +35,12 @@ SymbolTable table(30);
 %type<sym> type_specifier struct_or_union_specifier enum_specifier struct_or_union
 %type<sym> storage_class_specifier direct_declarator declarator declaration_specifiers
 %type<sym> init_declarator initializer parameter_declaration
+
+%type<sym> primary_expression postfix_expression unary_expression cast_expression
+%type<sym> multiplicative_expression additive_expression shift_expression
+%type<sym> relational_expression equality_expression and_expression
+%type<sym> exclusive_or_expression inclusive_or_expression logical_and_expression
+%type<sym> logical_or_expression conditional_expression assignment_expression
 %type<symList> init_declarator_list parameter_type_list parameter_list
 
 
@@ -43,13 +49,13 @@ SymbolTable table(30);
 
 primary_expression
     : IDENTIFIER
-    | CONSTANT
+    | CONSTANT {$$ = $1;}
     | STRING_LITERAL
     | '(' expression ')'
     ;
 
 postfix_expression
-	: primary_expression
+	: primary_expression {$$ = $1;}
 	| postfix_expression '[' expression ']'
 	| postfix_expression '(' ')'
 	| postfix_expression '(' argument_expression_list ')'
@@ -67,7 +73,7 @@ argument_expression_list
 	;
 
 unary_expression
-	: postfix_expression
+	: postfix_expression {$$ = $1;}
 	| INC_OP unary_expression
 	| DEC_OP unary_expression
 	| unary_operator cast_expression
@@ -85,31 +91,31 @@ unary_operator
 	;
 
 cast_expression
-	: unary_expression
+	: unary_expression {$$ = $1;}
 	| '(' type_name ')' cast_expression
 	;
 
 multiplicative_expression
-	: cast_expression
+	: cast_expression {$$ = $1;}
 	| multiplicative_expression '*' cast_expression
 	| multiplicative_expression '/' cast_expression
 	| multiplicative_expression '%' cast_expression
 	;
 
 additive_expression
-	: multiplicative_expression
+	: multiplicative_expression {$$ = $1;}
 	| additive_expression '+' multiplicative_expression
 	| additive_expression '-' multiplicative_expression
 	;
 
 shift_expression
-	: additive_expression
+	: additive_expression {$$ = $1;}
 	| shift_expression LEFT_OP additive_expression
 	| shift_expression RIGHT_OP additive_expression
 	;
 
 relational_expression
-	: shift_expression
+	: shift_expression {$$ = $1;}
 	| relational_expression '<' shift_expression
 	| relational_expression '>' shift_expression
 	| relational_expression LE_OP shift_expression
@@ -117,43 +123,43 @@ relational_expression
 	;
 
 equality_expression
-	: relational_expression
+	: relational_expression {$$ = $1;}
 	| equality_expression EQ_OP relational_expression
 	| equality_expression NE_OP relational_expression
 	;
 
 and_expression
-	: equality_expression
+	: equality_expression {$$ = $1;}
 	| and_expression '&' equality_expression
 	;
 
 exclusive_or_expression
-	: and_expression
+	: and_expression {$$ = $1;}
 	| exclusive_or_expression '^' and_expression
 	;
 
 inclusive_or_expression
-	: exclusive_or_expression
+	: exclusive_or_expression {$$ = $1;}
 	| inclusive_or_expression '|' exclusive_or_expression
 	;
 
 logical_and_expression
-	: inclusive_or_expression
+	: inclusive_or_expression {$$ = $1;}
 	| logical_and_expression AND_OP inclusive_or_expression
 	;
 
 logical_or_expression
-	: logical_and_expression
+	: logical_and_expression {$$ = $1;}
 	| logical_or_expression OR_OP logical_and_expression
 	;
 
 conditional_expression
-	: logical_or_expression
+	: logical_or_expression {$$ = $1;}
 	| logical_or_expression '?' expression ':' conditional_expression
 	;
 
 assignment_expression
-	: conditional_expression
+	: conditional_expression {$$ = $1;}
 	| unary_expression assignment_operator assignment_expression
 	;
 
@@ -312,27 +318,63 @@ function_specifier
 	;
 
 declarator
-	: pointer direct_declarator
+	: pointer direct_declarator { $2->setIsPointer(true); $$ = $2; }
 	| direct_declarator	{ $$ = $1; }
 	;
 
 
 direct_declarator
 	: IDENTIFIER		{ $$ = $1; }
-	| '(' declarator ')'
-	| direct_declarator '[' type_qualifier_list assignment_expression ']'
-	| direct_declarator '[' type_qualifier_list ']'
-	| direct_declarator '[' assignment_expression ']'
-	| direct_declarator '[' STATIC type_qualifier_list assignment_expression ']'
-	| direct_declarator '[' type_qualifier_list STATIC assignment_expression ']'
-	| direct_declarator '[' type_qualifier_list '*' ']'
-	| direct_declarator '[' '*' ']'
-	| direct_declarator '[' ']'
+	| '(' declarator ')' { $$ = $2; }
+	| direct_declarator '[' type_qualifier_list assignment_expression ']'{
+		if(!$1->isArray()){
+			$1->setIsArray(true);
+		}
+		$1->addArrSize(std::stoi($4->getSymbolName()));
+		$$ = $1;
+	}
+	| direct_declarator '[' type_qualifier_list ']'{
+		$1->setIsArray(true);
+		$$ = $1;
+	}
+	| direct_declarator '[' assignment_expression ']' {
+		if(!$1->isArray()){
+			$1->setIsArray(true);
+		}
+		$1->addArrSize(std::stoi($3->getSymbolName()));
+		$$ = $1;
+	}
+	| direct_declarator '[' STATIC type_qualifier_list assignment_expression ']'{
+		if(!$1->isArray()){
+			$1->setIsArray(true);
+		}
+		$1->addArrSize(std::stoi($5->getSymbolName()));
+		$$ = $1;
+	}
+	| direct_declarator '[' type_qualifier_list STATIC assignment_expression ']'{
+		if(!$1->isArray()){
+			$1->setIsArray(true);
+		}
+		$1->addArrSize(std::stoi($5->getSymbolName()));
+		$$ = $1;
+	}
+	| direct_declarator '[' type_qualifier_list '*' ']'{
+		$1->setIsArray(true);
+		$$ = $1;
+	}
+	| direct_declarator '[' '*' ']'{
+		$1->setIsArray(true);
+		$$ = $1;
+	}
+	| direct_declarator '[' ']' {
+		$1->setIsArray(true);
+		$$ = $1;
+	}
 	| direct_declarator '(' parameter_type_list ')' {
 		$1->setParamList($3);
 		$$ = $1;
 	}
-	| direct_declarator '(' identifier_list ')'
+	| direct_declarator '(' identifier_list ')' { $$ = $1; }
 	| direct_declarator '(' ')' { $$ = $1; }
 	;
 
@@ -484,7 +526,7 @@ jump_statement
 	;
 
 translation_unit
-	: external_declaration
+	: external_declaration 
 	| translation_unit external_declaration
 	;
 
