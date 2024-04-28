@@ -1,5 +1,16 @@
+Inserted: main in scope 1
+Inserted: argc in scope 1.1
+Inserted: argv in scope 1.1
+Inserted: b in scope 1.1
+ScopeTable 1.1 fully destructed.
+Inserted: main2 in scope 1
+Inserted: argd in scope 1.2
+Inserted: arge in scope 1.2
+Inserted: f in scope 1.2
+ScopeTable 1.2 fully destructed.
 Inserted: myNumbers in scope 1
+Inserted: b in scope 1
 
-Total lines: 6
+Total lines: 14
 Total errors: 0
 
