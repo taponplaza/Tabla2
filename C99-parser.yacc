@@ -32,16 +32,16 @@ SymbolTable table(30);
 
 %token<sym> CONSTANT
 
-%type<sym> type_specifier struct_or_union_specifier enum_specifier struct_or_union specifier_qualifier_list specifier_qualifier_list specifier_qualifier_list specifier_qualifier_list
-%type<sym> storage_class_specifier direct_declarator declarator declaration_specifiers type_qualifier type_qualifier type_qualifier type_qualifier
-%type<sym> init_declarator initializer parameter_declaration  struct_declarator  struct_declarator  struct_declarator  struct_declarator
+%type<sym> type_specifier struct_or_union_specifier enum_specifier struct_or_union specifier_qualifier_list   
+%type<sym> storage_class_specifier direct_declarator declarator declaration_specifiers type_qualifier   
+%type<sym> init_declarator initializer parameter_declaration  struct_declarator      
 
 %type<sym> primary_expression postfix_expression unary_expression cast_expression
 %type<sym> multiplicative_expression additive_expression shift_expression
 %type<sym> relational_expression equality_expression and_expression
 %type<sym> exclusive_or_expression inclusive_or_expression logical_and_expression
 %type<sym> logical_or_expression conditional_expression assignment_expression
-%type<symList> init_declarator_list parameter_type_list parameter_list struct_declaration_list struct_declarator_list struct_declaration struct_declaration_list struct_declarator_list struct_declaration struct_declaration_list struct_declarator_list struct_declaration struct_declaration_list struct_declarator_list struct_declaration
+%type<symList> init_declarator_list parameter_type_list parameter_list struct_declaration_list struct_declarator_list struct_declaration
 
 
 %start translation_unit
@@ -381,20 +381,6 @@ struct_declaration_list
 		} 
 		$$ = $1; 
 	}
-	: struct_declaration { $$ = $1; 
-	for(std::vector<SymbolInfo*>::size_type i = 0; i < $1->size(); i++){
-			logFile << "Struct item: " << $1->at(i)->getSymbolName() << endl;
-		} 
-	}
-	
-	| struct_declaration_list struct_declaration 
-	{ 
-		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
-			$1->push_back($2->at(i));
-			logFile << "Struct item: " << $2->at(i)->getSymbolName() << endl;
-		} 
-		$$ = $1; 
-	}
 	;
 
 struct_declaration
@@ -425,16 +411,11 @@ struct_declaration
 	}
 	;
 
-specifier_qualifier_list
-	: type_specifier  
-	| type_specifier  
-	| type_qualifier    
-	| type_specifier specifier_qualifier_list
-	| type_qualifier  
-	: type_specifier  
-	| type_specifier qualifier  _qualifier_list
-	| type_qualifier  
+specifier_qualifier_list 
+	: type_qualifier
 	| type_qualifier specifier_qualifier_list
+	| type_specifier  
+	| type_specifier specifier_qualifier_list
 	;
 
 struct_declarator_list
