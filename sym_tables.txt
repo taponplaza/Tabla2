@@ -1,3 +1,9 @@
+ScopeTable # 1.1
+ 6 --> < argv , IDENTIFIER , INT >
+ 17 --> < argc , IDENTIFIER , INT >
+
 ScopeTable # 1
- 12 --> < myNumbers , IDENTIFIER , INT >
+ 1 --> < y , IDENTIFIER , INT >
+ 7 --> < main , IDENTIFIER , INT >
+ 22 --> < car , IDENTIFIER , UNION , < x , IDENTIFIER , INT >, < price , IDENTIFIER , INT > >
 

@@ -269,86 +269,8 @@ struct_or_union_specifier
 		} 
 	
 	}
-	{ 
-		$2->setIsStruct(true);
-		$2->setVariableType($1->getSymbolType());
-		if (table.insert($2)) {
-			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
-		$2->setParamList($4);
-		for(std::vector<SymbolInfo*>::size_type i = 0; i < $4->size(); i++){
-			logFile << "Struct item 2: " << $4->at(i)->getSymbolName() << endl;
-		} 
-	
-	}
-	{ 
-		$2->setIsStruct(true);
-		$2->setVariableType($1->getSymbolType());
-		if (table.insert($2)) {
-			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
-		$2->setParamList($4);
-		for(std::vector<SymbolInfo*>::size_type i = 0; i < $4->size(); i++){
-			logFile << "Struct item 2: " << $4->at(i)->getSymbolName() << endl;
-		} 
-	
-	}
-	{ 
-		$2->setIsStruct(true);
-		$2->setVariableType($1->getSymbolType());
-		if (table.insert($2)) {
-			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
-		$2->setParamList($4);
-		for(std::vector<SymbolInfo*>::size_type i = 0; i < $4->size(); i++){
-			logFile << "Struct item 2: " << $4->at(i)->getSymbolName() << endl;
-		} 
-	
-	}
 	| struct_or_union '{' struct_declaration_list '}'
 	| struct_or_union IDENTIFIER
-	{ 
-		$1->setIsStruct(true);
-		if (table.insert($2)) {
-			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
-	}
-	{ 
-		$1->setIsStruct(true);
-		if (table.insert($2)) {
-			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
-	}
-	{ 
-		$1->setIsStruct(true);
-		if (table.insert($2)) {
-			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
-	}
 	{ 
 		$1->setIsStruct(true);
 		if (table.insert($2)) {
@@ -385,24 +307,6 @@ struct_declaration_list
 
 struct_declaration
 	: specifier_qualifier_list struct_declarator_list ';'
-	{
-		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
-			$2->at(i)->setVariableType($1->getSymbolType());
-		}
-		$$ = $2;
-	}
-	{
-		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
-			$2->at(i)->setVariableType($1->getSymbolType());
-		}
-		$$ = $2;
-	}
-	{
-		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
-			$2->at(i)->setVariableType($1->getSymbolType());
-		}
-		$$ = $2;
-	}
 	{
 		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
 			$2->at(i)->setVariableType($1->getSymbolType());
