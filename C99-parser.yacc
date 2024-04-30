@@ -582,10 +582,10 @@ external_declaration
 function_definition
 	: declaration_specifiers declarator declaration_list compound_statement
 	| declaration_specifiers declarator {
-		$1->setIsFunction(true);
+		$2->setIsFunction(true);
 		$2->setVariableType($1->getSymbolType());
 		if (table.insert($2)) {
-			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+			logFile << "Inserted Function: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
 		}
 		else {
 			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
@@ -595,9 +595,9 @@ function_definition
 		table.enterScope();
 		if ($2->getParamList() != nullptr) {
 			for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->getParamList()->size(); i++){
-				SymbolInfo* symbol = $2->getParamList()->at(i);
+				SymbolInfo* symbol = new SymbolInfo(*$2->getParamList()->at(i));
 				if (table.insert(symbol)) {
-					logFile << "Inserted: " << symbol->getSymbolName() << " in scope " << table.printScopeId() << endl;
+					logFile << "Inserted Parameter: " << symbol->getSymbolName() << " in scope " << table.printScopeId() << endl;
 				}
 				else {
 					logFile << "Error: " << symbol->getSymbolName() << " already exists in scope " << endl;
@@ -607,7 +607,7 @@ function_definition
 			}
 		}
 	} compound_statement {
-		$1->setIsDefined(true);
+		$2->setIsDefined(true);
 		table.exitScope(); 
 	}
 	;

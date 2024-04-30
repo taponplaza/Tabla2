@@ -1,9 +1,11 @@
 ScopeTable # 1.1
- 6 --> < argv , IDENTIFIER , INT >
- 17 --> < argc , IDENTIFIER , INT >
+ 0 --> | < x , DOUBLE > |
+ 6 --> | < argv , INT > |
+ 17 --> | < argc , INT > |
 
 ScopeTable # 1
- 1 --> < y , IDENTIFIER , INT >
- 7 --> < main , IDENTIFIER , INT >
- 22 --> < car , IDENTIFIER , UNION , < x , IDENTIFIER , INT >, < price , IDENTIFIER , INT > >
+ 1 --> | < y , INT > |
+ 7 --> | < main , Function Symbol , INT , Parameter List: < argc , IDENTIFIER , INT >, < argv , IDENTIFIER , INT > > |
+ 10 --> | < MyNumbers , Array Symbol , INT <  Array Size: 10, 5, 3 >  > |
+ 22 --> | < car , UNION , < x , IDENTIFIER , INT >, < price , IDENTIFIER , INT > > |
 

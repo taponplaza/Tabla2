@@ -90,6 +90,17 @@ public:
         return paramListStr;
     }
 
+    string getSizeList(){
+        string sizeListStr = " Array Size: ";
+        for(std::vector<int>::size_type i = 0; i < arrSize.size(); i++){
+            sizeListStr += std::to_string(arrSize.at(i));
+            if(i < arrSize.size() - 1){
+                sizeListStr += ", ";
+            }
+        }
+        return sizeListStr;
+    }
+
     void setIsFunction(bool set){
         isFunc = set;
     }
@@ -335,12 +346,20 @@ public:
 
             while (currSymbol != NULL) {
                 // cout << "< " << currSymbol->getSymbolName() << " : " << currSymbol->getSymbolType() << " > ";
+                sym_tables << "| ";
                 if(currSymbol->isStruct()){
-                    sym_tables << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() <<  " , " << currSymbol->getParamListString() << " >";
+                    sym_tables << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getVariableType() <<  " , " << currSymbol->getParamListString() << " >";
+                }
+                else if(currSymbol->isArray()){
+                    sym_tables << "< " << currSymbol->getSymbolName() << " , " << "Array Symbol" << " , " << currSymbol->getVariableType() <<  " < " << currSymbol->getSizeList() << " > " << " >";
+                }
+                else if(currSymbol->isFunction()){
+                    sym_tables << "< " << currSymbol->getSymbolName() << " , " << "Function Symbol" << " , " << currSymbol->getVariableType() << " , " << "Parameter List: " << currSymbol->getParamListString() << " >";
                 }
                 else{
-                    sym_tables << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getSymbolType() << " , " << currSymbol->getVariableType() << " >";
+                    sym_tables << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getVariableType() << " >";
                 }
+                sym_tables << " |";
                 currSymbol = currSymbol->getNextSymbol();
             }
             if(printEnter){
@@ -434,7 +453,7 @@ public:
 //        make the previous current table as its parentScopeTable.
         currScopeTable = new ScopeTable(tableSize, currScopeTable);
         // cout << "New ScopeTable with id " << currScopeTable->getScopeId() << " created" << endl;
-        // logFile << "New ScopeTable with id " << currScopeTable->getScopeId() << " created" << endl;
+        logFile << "New ScopeTable with id " << currScopeTable->getScopeId() << " created" << endl;
     }
 
     void exitScope() {

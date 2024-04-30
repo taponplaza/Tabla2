@@ -1,6 +1,8 @@
-Inserted: main in scope 1
-Inserted: argc in scope 1.1
-Inserted: argv in scope 1.1
+Inserted Function: main in scope 1
+New ScopeTable with id 1.1 created
+Inserted Parameter: argc in scope 1.1
+Inserted Parameter: argv in scope 1.1
+Inserted: x in scope 1.1
 ScopeTable 1.1 fully destructed.
 Struct item: x
 Struct item: price
@@ -8,8 +10,9 @@ Inserted: car in scope 1
 Struct item 2: x
 Struct item 2: price
 Inserted: y in scope 1
+Inserted: MyNumbers in scope 1
 ScopeTable 1 fully destructed.
 
-Total lines: 10
+Total lines: 11
 Total errors: 0
 

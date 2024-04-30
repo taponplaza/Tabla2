@@ -1,5 +1,5 @@
 int main(int argc, int argv){
-    
+    double x;
 }
 union car
 {
@@ -7,6 +7,7 @@ union car
   int price;
 };
 int y;
+int MyNumbers[10][5][3];
 /* 
 union unionJob
 {
