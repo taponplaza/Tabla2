@@ -20,7 +20,7 @@ private:
     bool isArr = false;
     bool isPoint = false;
     bool isStrct = false;
-    vector<int> arrSize;
+    vector<string> arrSize;
     
     
     
@@ -42,7 +42,7 @@ public:
         returnType = s1.returnType;  
         varType = s1.varType;
 
-        arrSize = std::vector<int>();
+        arrSize = std::vector<string>();
         arrSize = s1.arrSize;
 
         paramList = new vector<SymbolInfo*>;
@@ -81,10 +81,12 @@ public:
 
     string getParamListString(){
         string paramListStr = "";
-        for(std::vector<SymbolInfo*>::size_type i = 0; i < paramList->size(); i++){
-            paramListStr +=  "< " + paramList->at(i)->getSymbolName() + " , " + paramList->at(i)->getSymbolType() + " , " + paramList->at(i)->getVariableType() + " >";
-            if(i < paramList->size() - 1){
-                paramListStr += ", ";
+        if (paramList != nullptr && !paramList->empty()){
+            for(std::vector<SymbolInfo*>::size_type i = 0; i < paramList->size(); i++){
+                paramListStr +=  "< " + paramList->at(i)->getSymbolName() + " , " + paramList->at(i)->getSymbolType() + " , " + paramList->at(i)->getVariableType() + " >";
+                if(i < paramList->size() - 1){
+                    paramListStr += ", ";
+                }
             }
         }
         return paramListStr;
@@ -92,8 +94,8 @@ public:
 
     string getSizeList(){
         string sizeListStr = " Array Size: ";
-        for(std::vector<int>::size_type i = 0; i < arrSize.size(); i++){
-            sizeListStr += std::to_string(arrSize.at(i));
+        for(std::vector<string>::size_type i = 0; i < arrSize.size(); i++){
+            sizeListStr += (arrSize.at(i));
             if(i < arrSize.size() - 1){
                 sizeListStr += ", ";
             }
@@ -114,7 +116,7 @@ public:
     }
 
     void setIsArray(bool set){
-        arrSize = std::vector<int>();
+        arrSize = std::vector<string>();
         isArr = set;
     }
 
@@ -134,7 +136,7 @@ public:
         return isPoint;
     }
 
-    void addArrSize(int size){
+    void addArrSize(string size){
         arrSize.push_back(size);
     }
 

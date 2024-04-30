@@ -42,7 +42,7 @@ SymbolTable table(30);
 %type<sym> exclusive_or_expression inclusive_or_expression logical_and_expression
 %type<sym> logical_or_expression conditional_expression assignment_expression
 %type<symList> init_declarator_list parameter_type_list parameter_list struct_declaration_list struct_declarator_list struct_declaration
-
+%type<symList> declaration_list identifier_list declaration 
 
 %start translation_unit
 %%
@@ -189,9 +189,12 @@ constant_expression
 declaration
 	: declaration_specifiers ';'
 	| declaration_specifiers init_declarator_list ';' {
+		$$ = new vector<SymbolInfo*>();
 		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
 			// logFile << "Debug: " << $1->getSymbolType() << " Debug: " << $2->at(i)->getSymbolName() << " Debug: " << $2->at(i)->getVariableType() << endl;
 			$2->at(i)->setVariableType($1->getSymbolType());
+			SymbolInfo* symbol = new SymbolInfo(*$2->at(i));
+			$$->push_back(symbol);
 			if (table.insert($2->at(i))) {
 				logFile << "Inserted: " << $2->at(i)->getSymbolName() << " in scope " << table.printScopeId() << endl;
 			}
@@ -201,19 +204,18 @@ declaration
 				error_count++;
 			}
 		}
-	
 	}
 	;
 
 declaration_specifiers
 	: storage_class_specifier
-	| storage_class_specifier declaration_specifiers
-	| type_specifier
-	| type_specifier declaration_specifiers
+	| storage_class_specifier declaration_specifiers { $$ = $2; }
+	| type_specifier { $$ = $1; }
+	| type_specifier declaration_specifiers { $$ = $1; }
 	| type_qualifier
-	| type_qualifier declaration_specifiers
+	| type_qualifier declaration_specifiers { $$ = $2; }
 	| function_specifier
-	| function_specifier declaration_specifiers
+	| function_specifier declaration_specifiers { $$ = $2; }
 	;
 
 init_declarator_list
@@ -374,7 +376,7 @@ direct_declarator
 		if(!$1->isArray()){
 			$1->setIsArray(true);
 		}
-		$1->addArrSize(std::stoi($4->getSymbolName()));
+		$1->addArrSize(($4->getSymbolName()));
 		$$ = $1;
 	}
 	| direct_declarator '[' type_qualifier_list ']'{
@@ -385,21 +387,21 @@ direct_declarator
 		if(!$1->isArray()){
 			$1->setIsArray(true);
 		}
-		$1->addArrSize(std::stoi($3->getSymbolName()));
+		$1->addArrSize(($3->getSymbolName()));
 		$$ = $1;
 	}
 	| direct_declarator '[' STATIC type_qualifier_list assignment_expression ']'{
 		if(!$1->isArray()){
 			$1->setIsArray(true);
 		}
-		$1->addArrSize(std::stoi($5->getSymbolName()));
+		$1->addArrSize(($5->getSymbolName()));
 		$$ = $1;
 	}
 	| direct_declarator '[' type_qualifier_list STATIC assignment_expression ']'{
 		if(!$1->isArray()){
 			$1->setIsArray(true);
 		}
-		$1->addArrSize(std::stoi($5->getSymbolName()));
+		$1->addArrSize(($5->getSymbolName()));
 		$$ = $1;
 	}
 	| direct_declarator '[' type_qualifier_list '*' ']'{
@@ -446,17 +448,17 @@ parameter_list
 	;
 
 parameter_declaration
-	: declaration_specifiers declarator{
+	: declaration_specifiers declarator {
 		$2->setVariableType($1->getSymbolType());
 		$$ = $2;
 	}
-	| declaration_specifiers abstract_declarator
+	| declaration_specifiers abstract_declarator 
 	| declaration_specifiers
 	;
 
 identifier_list
-	: IDENTIFIER
-	| identifier_list ',' IDENTIFIER
+	: IDENTIFIER { $$ = new vector<SymbolInfo*>(); $$->push_back($1); }
+	| identifier_list ',' IDENTIFIER { $1->push_back($3); $$ = $1; }
 	;
 
 type_name
@@ -513,10 +515,10 @@ designator
 
 statement
 	: labeled_statement
-	| compound_statement
+	| compound_statement 
 	| expression_statement
-	| selection_statement
-	| iteration_statement
+	| { table.enterScope(); } selection_statement { table.exitScope(); }
+	| { table.enterScope(); } iteration_statement { table.exitScope(); }
 	| jump_statement
 	;
 
@@ -548,11 +550,11 @@ expression_statement
 
 selection_statement
 	: IF '(' expression ')' statement
-	| IF '(' expression ')' statement ELSE statement
+	| IF '(' expression ')' statement ELSE { table.exitScope(); table.enterScope(); } statement
 	| SWITCH '(' expression ')' statement
 	;
 
-iteration_statement
+iteration_statement 
 	: WHILE '(' expression ')' statement
 	| DO statement WHILE '(' expression ')' ';'
 	| FOR '(' expression_statement expression_statement ')' statement
@@ -580,7 +582,27 @@ external_declaration
 	;
 
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement
+	: declaration_specifiers declarator {
+		$2->setIsFunction(true);
+		$2->setVariableType($1->getSymbolType());
+		if (table.insert($2)) {
+			logFile << "Inserted Function: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		}
+		else {
+			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+			error_count++;
+		}
+		table.enterScope();
+	} declaration_list {
+	// 	for (auto symbol : *$4) {
+    //     logFile << "Debug Simbol: " << symbol->getSymbolName() << "\n";
+    // }
+		table.getSymbolInfo($2->getSymbolName())->setParamList($4);
+	} compound_statement {
+		$2->setIsDefined(true);
+		table.exitScope(); 
+	}
 	| declaration_specifiers declarator {
 		$2->setIsFunction(true);
 		$2->setVariableType($1->getSymbolType());
@@ -613,9 +635,15 @@ function_definition
 	;
 
 declaration_list
-	: declaration
-	| declaration_list declaration
-	;
+    : declaration { 
+        $$ = new vector<SymbolInfo*>();
+        $$->insert($$->end(), $1->begin(), $1->end());
+    }
+    | declaration_list declaration { 
+        $1->insert($1->end(), $2->begin(), $2->end());
+        $$ = $1;
+    }
+    ;
 
 
 %%
