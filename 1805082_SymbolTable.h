@@ -358,6 +358,9 @@ public:
                 else if(currSymbol->isFunction()){
                     sym_tables << "< " << currSymbol->getSymbolName() << " , " << "Function Symbol" << " , " << currSymbol->getVariableType() << " , " << "Parameter List: " << currSymbol->getParamListString() << " >";
                 }
+                else if(currSymbol->isPointer()){
+                    sym_tables << "< " << currSymbol->getSymbolName() << " , " << "Pointer Symbol" << " , " << currSymbol->getVariableType() << " >";
+                }
                 else{
                     sym_tables << "< " << currSymbol->getSymbolName() << " , " << currSymbol->getVariableType() << " >";
                 }

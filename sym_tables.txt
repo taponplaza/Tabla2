@@ -10,14 +10,14 @@ ScopeTable # 1.1
  0 --> | < x , DOUBLE > |
  3 --> | < t1 , STRUCT > |
  4 --> | < PI50DT , DOUBLE > || < t2 , STRUCT > |
- 6 --> | < argv , CHAR > |
+ 6 --> | < argv , Pointer Symbol , CHAR > |
  7 --> | < sum , DOUBLE > |
  8 --> | < PI25DT , DOUBLE > |
  13 --> | < pi , DOUBLE > |
  15 --> | < i , INT > |
  16 --> | < segundos , DOUBLE > |
  17 --> | < argc , INT > || < factor , INT > |
- 26 --> | < timeval ,  > |
+ 26 --> | < timeval ,  ,  > |
 
 ScopeTable # 1
  0 --> | < step , DOUBLE > |
