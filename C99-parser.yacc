@@ -211,7 +211,7 @@ declaration_specifiers
 	: storage_class_specifier
 	| storage_class_specifier declaration_specifiers { $$ = $2; }
 	| type_specifier { $$ = $1; }
-	| type_specifier declaration_specifiers { $$ = $1; }
+	| type_specifier declaration_specifiers { $$ = $2; }
 	| type_qualifier
 	| type_qualifier declaration_specifiers { $$ = $2; }
 	| function_specifier
@@ -274,7 +274,7 @@ struct_or_union_specifier
 	| struct_or_union '{' struct_declaration_list '}'
 	| struct_or_union IDENTIFIER
 	{ 
-		$1->setIsStruct(true);
+		$2->setIsStruct(true);
 		if (table.insert($2)) {
 			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
 		}else {

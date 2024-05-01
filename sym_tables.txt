@@ -14,13 +14,13 @@ ScopeTable # 1.1
  7 --> | < sum , DOUBLE > |
  8 --> | < PI25DT , DOUBLE > |
  13 --> | < pi , DOUBLE > |
- 15 --> | < i , UNSIGNED > |
+ 15 --> | < i , INT > |
  16 --> | < segundos , DOUBLE > |
  17 --> | < argc , INT > || < factor , INT > |
  26 --> | < timeval ,  > |
 
 ScopeTable # 1
  0 --> | < step , DOUBLE > |
- 4 --> | < num_steps , UNSIGNED > |
+ 4 --> | < num_steps , INT > |
  7 --> | < main , Function Symbol , INT , Parameter List: < argc , IDENTIFIER , INT >, < argv , IDENTIFIER , CHAR > > |
 
