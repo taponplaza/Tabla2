@@ -33,5 +33,5 @@ main.o: main.cc
 	$(CC) -c $(CFLAGS) main.cc
 
 clean:
-	rm -f $(OBJS) core y.* lex.yy.* fparse
+	rm -f $(OBJS) core y.* lex.yy.* fparse log.txt error.txt sym_tables.txt
 

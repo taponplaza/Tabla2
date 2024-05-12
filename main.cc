@@ -24,9 +24,16 @@ extern SymbolTable table;
 
 int main( int argc, const char* argv[] )
 {
-    if(argc!=4) {
-        std::cout << "command: ./fparse input.c log.txt error.txt" << std::endl;
+    if(argc<2) {
+        std::cout << "command: ./fparse input.c [DEBUG]" << std::endl;
         return 0;
+    }
+
+    for (int i = 1; i < argc; ++i) {
+        if (std::string(argv[i]) == "DEBUG") {
+            yydebug = 1;  // Enable Bison's debug mode
+            break;
+        }
     }
 
     if((inputFile=fopen(argv[1],"r"))==NULL) {
@@ -34,27 +41,31 @@ int main( int argc, const char* argv[] )
         exit(1);
     }
 
-    logFile.open(argv[2]);
-    errFile.open(argv[3]);
-    sym_tables.open("sym_tables.txt");
+    if(yydebug){
+        logFile.open("log.txt");
+        errFile.open("error.txt");
+        sym_tables.open("sym_tables.txt");
+    }
 
     yyin=inputFile;
-
-    //yydebug = 1;  // Enable Bison's debug mode
 
     yyparse();
     
     table.exitScope();
 
-    logFile << endl;
-    logFile << "Total lines: " << line_count << endl;
-    logFile << "Total errors: " << error_count << endl << endl;
+    if(yydebug){
+        logFile << endl;
+        logFile << "Total lines: " << line_count << endl;
+        logFile << "Total errors: " << error_count << endl << endl;
 
-    table.printCurrScopeTable(); // Print the current scope table
+        table.printCurrScopeTable(); // Print the current scope table
 
-    logFile.close();
-    sym_tables.close();
-    errFile.close();
+        logFile.close();
+        sym_tables.close();
+        errFile.close();
+
+    }
+    
     fclose(yyin);
     
     return 0;

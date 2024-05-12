@@ -3,6 +3,7 @@
 #include "1805082_SymbolTable.h"
 void yyerror(char const *s);
 extern int yylex (void);
+extern int yydebug;
 
 int error_count = 0;
 
@@ -195,14 +196,15 @@ declaration
 			$2->at(i)->setVariableType($1->getSymbolType());
 			SymbolInfo* symbol = new SymbolInfo(*$2->at(i));
 			$$->push_back(symbol);
-			if (table.insert($2->at(i))) {
-				logFile << "Inserted: " << $2->at(i)->getSymbolName() << " in scope " << table.printScopeId() << endl;
-			}
-			else {
-				logFile << "Error: " << $2->at(i)->getSymbolName() << " already exists in scope " << endl;
-				errFile << "Error: " << $2->at(i)->getSymbolName() << " already exists in scope " << endl;
-				error_count++;
-			}
+			table.insert($2->at(i));
+			// if (table.insert($2->at(i))) {
+			// 	logFile << "Inserted: " << $2->at(i)->getSymbolName() << " in scope " << table.printScopeId() << endl;
+			// }
+			// else {
+			// 	logFile << "Error: " << $2->at(i)->getSymbolName() << " already exists in scope " << endl;
+			// 	errFile << "Error: " << $2->at(i)->getSymbolName() << " already exists in scope " << endl;
+			// 	error_count++;
+			// }
 		}
 	}
 	;
@@ -258,30 +260,34 @@ struct_or_union_specifier
 	{ 
 		$2->setIsStruct(true);
 		$2->setVariableType($1->getSymbolType());
-		if (table.insert($2)) {
-			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
+		table.insert($2);
+		// if (table.insert($2)) {
+		// 	logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		// }else {
+		// 	logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+		// 	errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+		// 	error_count++;
+		// }
 		$2->setParamList($4);
-		for(std::vector<SymbolInfo*>::size_type i = 0; i < $4->size(); i++){
-			logFile << "Struct item 2: " << $4->at(i)->getSymbolName() << endl;
-		} 
+		if(yydebug){
+			for(std::vector<SymbolInfo*>::size_type i = 0; i < $4->size(); i++){
+				logFile << "Struct item 2: " << $4->at(i)->getSymbolName() << endl;
+			} 
+		}
 	
 	}
 	| struct_or_union '{' struct_declaration_list '}'
 	| struct_or_union IDENTIFIER
 	{ 
 		$2->setIsStruct(true);
-		if (table.insert($2)) {
-			logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
+		table.insert($2);
+		// if (table.insert($2)) {
+		// 	logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		// }else {
+		// 	logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+		// 	errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+		// 	error_count++;
+		// }
 	}
 	;
 
@@ -291,17 +297,23 @@ struct_or_union
 	;
 
 struct_declaration_list
-	: struct_declaration { $$ = $1; 
-	for(std::vector<SymbolInfo*>::size_type i = 0; i < $1->size(); i++){
-			logFile << "Struct item: " << $1->at(i)->getSymbolName() << endl;
-		} 
+	: struct_declaration 
+	{ 
+		$$ = $1; 
+		if(yydebug){
+			for(std::vector<SymbolInfo*>::size_type i = 0; i < $1->size(); i++){
+					logFile << "Struct item: " << $1->at(i)->getSymbolName() << endl;
+			} 
+		}
 	}
 	
 	| struct_declaration_list struct_declaration 
 	{ 
 		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
 			$1->push_back($2->at(i));
-			logFile << "Struct item: " << $2->at(i)->getSymbolName() << endl;
+			if(yydebug){
+				logFile << "Struct item: " << $2->at(i)->getSymbolName() << endl;
+			}
 		} 
 		$$ = $1; 
 	}
@@ -585,14 +597,15 @@ function_definition
 	: declaration_specifiers declarator {
 		$2->setIsFunction(true);
 		$2->setVariableType($1->getSymbolType());
-		if (table.insert($2)) {
-			logFile << "Inserted Function: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}
-		else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
+		table.insert($2);
+		// if (table.insert($2)) {
+		// 	logFile << "Inserted Function: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		// }
+		// else {
+		// 	logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+		// 	errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+		// 	error_count++;
+		// }
 		table.enterScope();
 	} declaration_list {
 	// 	for (auto symbol : *$4) {
@@ -606,26 +619,28 @@ function_definition
 	| declaration_specifiers declarator {
 		$2->setIsFunction(true);
 		$2->setVariableType($1->getSymbolType());
-		if (table.insert($2)) {
-			logFile << "Inserted Function: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		}
-		else {
-			logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-			error_count++;
-		}
+		table.insert($2);
+		// if (table.insert($2)) {
+		// 	logFile << "Inserted Function: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
+		// }
+		// else {
+		// 	logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+		// 	errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
+		// 	error_count++;
+		// }
 		table.enterScope();
 		if ($2->getParamList() != nullptr) {
 			for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->getParamList()->size(); i++){
 				SymbolInfo* symbol = new SymbolInfo(*$2->getParamList()->at(i));
-				if (table.insert(symbol)) {
-					logFile << "Inserted Parameter: " << symbol->getSymbolName() << " in scope " << table.printScopeId() << endl;
-				}
-				else {
-					logFile << "Error: " << symbol->getSymbolName() << " already exists in scope " << endl;
-					errFile << "Error: " << symbol->getSymbolName() << " already exists in scope " << endl;
-					error_count++;
-				}
+				table.insert(symbol);
+				// if (table.insert(symbol)) {
+				// 	logFile << "Inserted Parameter: " << symbol->getSymbolName() << " in scope " << table.printScopeId() << endl;
+				// }
+				// else {
+				// 	logFile << "Error: " << symbol->getSymbolName() << " already exists in scope " << endl;
+				// 	errFile << "Error: " << symbol->getSymbolName() << " already exists in scope " << endl;
+				// 	error_count++;
+				// }
 			}
 		}
 	} compound_statement {
@@ -655,9 +670,12 @@ extern int line_count;
 
 void yyerror(char const *s)
 {
-	logFile << "Error at line " << line_count << " column: " << column << ": syntax error" << endl << endl;
-	errFile << "Error at line " << line_count << " column: " << column << ": syntax error" << endl << endl;
-	error_count++;
+	cout << "Error at line " << line_count << " column: " << column << ": syntax error" << endl << endl;
+	if(yydebug){
+		logFile << "Error at line " << line_count << " column: " << column << ": syntax error" << endl << endl;
+		errFile << "Error at line " << line_count << " column: " << column << ": syntax error" << endl << endl;
+		error_count++;
+	}
 
 	/* fflush(stdout);
 	printf("\n%*s\n%*s\n", line_count, "^", column, s); */
