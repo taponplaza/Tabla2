@@ -1,0 +1,26 @@
+ScopeTable # 1.1.1.1
+
+ScopeTable # 1.1.1
+
+ScopeTable # 1.1.2
+
+ScopeTable # 1.1.3
+
+ScopeTable # 1.1
+ 0 --> | < x , DOUBLE > |
+ 3 --> | < t1 , STRUCT > |
+ 4 --> | < PI50DT , DOUBLE > || < t2 , STRUCT > |
+ 6 --> | < argv , Pointer Symbol , CHAR > |
+ 7 --> | < sum , DOUBLE > |
+ 8 --> | < PI25DT , DOUBLE > |
+ 13 --> | < pi , DOUBLE > |
+ 15 --> | < i , UNSIGNED_LONG_INT > |
+ 16 --> | < segundos , DOUBLE > |
+ 17 --> | < argc , INT > || < factor , INT > |
+ 26 --> | < timeval , STRUCT ,  > |
+
+ScopeTable # 1
+ 0 --> | < step , DOUBLE > |
+ 4 --> | < num_steps , STATIC_UNSIGNED_LONG_INT > |
+ 7 --> | < main , Function Symbol , INT , Parameter List: < argc , IDENTIFIER , INT >, < argv , IDENTIFIER , CHAR > > |
+

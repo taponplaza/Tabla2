@@ -42,7 +42,7 @@ SymbolTable table(30);
 %type<sym> multiplicative_expression additive_expression shift_expression
 %type<sym> relational_expression equality_expression and_expression
 %type<sym> exclusive_or_expression inclusive_or_expression logical_and_expression
-%type<sym> logical_or_expression conditional_expression assignment_expression
+%type<sym> logical_or_expression conditional_expression assignment_expression function_specifier
 %type<symList> init_declarator_list parameter_type_list parameter_list struct_declaration_list struct_declarator_list struct_declaration
 %type<symList> declaration_list identifier_list declaration 
 
@@ -216,14 +216,34 @@ declaration
 	;
 
 declaration_specifiers
-	: storage_class_specifier
-	| storage_class_specifier declaration_specifiers { $$ = $2; }
+	: storage_class_specifier { $$ = $1; }
+	| storage_class_specifier declaration_specifiers { 
+		std::ostringstream oss;
+		oss << $1->getSymbolType() << "_" << $2->getSymbolType();
+		$2->setSymbolType(oss.str());
+		$$ = $2;
+	}
 	| type_specifier { $$ = $1; }
-	| type_specifier declaration_specifiers { $$ = $2; }
-	| type_qualifier
-	| type_qualifier declaration_specifiers { $$ = $2; }
-	| function_specifier
-	| function_specifier declaration_specifiers { $$ = $2; }
+	| type_specifier declaration_specifiers { 
+		std::ostringstream oss;
+		oss << $1->getSymbolType() << "_" << $2->getSymbolType();
+		$2->setSymbolType(oss.str());
+		$$ = $2;
+	}
+	| type_qualifier { $$ = $1; }
+	| type_qualifier declaration_specifiers { 
+		std::ostringstream oss;
+		oss << $1->getSymbolType() << "_" << $2->getSymbolType();
+		$2->setSymbolType(oss.str());
+		$$ = $2;
+	}
+	| function_specifier { $$ = $1; }
+	| function_specifier declaration_specifiers { 
+		std::ostringstream oss;
+		oss << $1->getSymbolType() << "_" << $2->getSymbolType();
+		$2->setSymbolType(oss.str());
+		$$ = $2;
+	}
 	;
 
 init_declarator_list
@@ -344,9 +364,19 @@ struct_declaration
 
 specifier_qualifier_list 
 	: type_qualifier { $$ = $1; }
-	| type_qualifier specifier_qualifier_list { $$ = $2; }
+	| type_qualifier specifier_qualifier_list { 
+		std::ostringstream oss;
+		oss << $1->getSymbolType() << "_" << $2->getSymbolType();
+		$2->setSymbolType(oss.str());
+		$$ = $2;
+	}
 	| type_specifier   { $$ = $1; }
-	| type_specifier specifier_qualifier_list { $$ = $2; }
+	| type_specifier specifier_qualifier_list { 
+		std::ostringstream oss;
+		oss << $1->getSymbolType() << "_" << $2->getSymbolType();
+		$2->setSymbolType(oss.str());
+		$$ = $2;
+	}
 	;
 
 struct_declarator_list
@@ -379,13 +409,13 @@ enumerator
 	;
 
 type_qualifier
-	: CONST
-	| RESTRICT
-	| VOLATILE
+	: CONST { $$ = new SymbolInfo("const", "CONST"); }
+	| RESTRICT { $$ = new SymbolInfo("restrict", "RESTRICT"); }
+	| VOLATILE { $$ = new SymbolInfo("volatile", "VOLATILE"); }
 	;
 
 function_specifier
-	: INLINE
+	: INLINE { $$ = new SymbolInfo("inline", "INLINE"); }
 	;
 
 declarator
