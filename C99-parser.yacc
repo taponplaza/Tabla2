@@ -208,9 +208,11 @@ declaration
 				$2->at(i)->setVariableType("STRUCT");
 				$2->at(i)->setParamList($1->getParamList());
 			}
-			SymbolInfo* symbol = new SymbolInfo(*$2->at(i));
-			$$->push_back(symbol);
-			table.insert($2->at(i));
+			if(!$2->at(i)->isFunction()){
+				SymbolInfo* symbol = new SymbolInfo(*$2->at(i));
+				$$->push_back(symbol);
+				table.insert($2->at(i));
+			}
 			// if (table.insert($2->at(i))) {
 			// 	logFile << "Inserted: " << $2->at(i)->getSymbolName() << " in scope " << table.printScopeId() << endl;
 			// }
@@ -474,6 +476,7 @@ direct_declarator
 	}
 	| direct_declarator '(' parameter_type_list ')' {
 		$1->setParamList($3);
+		$1->setIsFunction(true);
 		$$ = $1;
 	}
 	| direct_declarator '(' identifier_list ')' { $$ = $1; }
