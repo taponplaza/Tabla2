@@ -189,7 +189,15 @@ constant_expression
 	;
 
 declaration
-	: declaration_specifiers ';'
+	: declaration_specifiers ';'{
+		$$ = new vector<SymbolInfo*>();
+		if($1->isStruct()){
+			table.insert($1);
+			SymbolInfo* symbol = new SymbolInfo(*$1);
+			$$->push_back(symbol);
+			table.insert($1);
+		}
+	}
 	| declaration_specifiers init_declarator_list ';' {
 		$$ = new vector<SymbolInfo*>();
 		for(std::vector<SymbolInfo*>::size_type i = 0; i < $2->size(); i++){
@@ -312,15 +320,8 @@ struct_or_union_specifier
 	| struct_or_union IDENTIFIER
 	{ 
 		$2->setIsStruct(true);
-		$2->setVariableType("STRUCT");
-		table.insert($2);
-		// if (table.insert($2)) {
-		// 	logFile << "Inserted: " << $2->getSymbolName() << " in scope " << table.printScopeId() << endl;
-		// }else {
-		// 	logFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-		// 	errFile << "Error: " << $2->getSymbolName() << " already exists in scope " << endl;
-		// 	error_count++;
-		// }
+		$2->setVariableType($1->getSymbolType());
+		$$ = $2;
 	}
 	;
 
